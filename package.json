@@ -1,9 +1,30 @@
 {
-  "name": "perfil-ionic-supabase",
+  "name": "perfil-ionic-firebase",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "vite --host 0.0.0.0", "build": "vue-tsc -b && vite build", "preview": "vite preview --host 0.0.0.0", "cap:sync": "npm run build && cap sync", "android": "npm run cap:sync && cap open android" },
-  "dependencies": { "@capacitor/android": "^7.4.3", "@capacitor/core": "^7.4.3", "@ionic/vue": "^8.7.6", "@ionic/vue-router": "^8.0.7", "@supabase/supabase-js": "^2.57.4", "ionicons": "^7.4.0", "vue": "^3.5.21", "vue-router": "^4.5.1" },
-  "devDependencies": { "@capacitor/cli": "^7.4.3", "@vitejs/plugin-vue": "^6.0.1", "typescript": "~5.9.2", "vite": "^7.1.7", "vue-tsc": "^3.0.8" }
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "cap:sync": "npm run build && cap sync",
+    "android": "npm run cap:sync && cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@ionic/vue": "^8.7.6",
+    "@ionic/vue-router": "^8.0.7",
+    "firebase": "^13.1.0",
+    "ionicons": "^7.4.0",
+    "vue": "^3.5.21",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.7",
+    "vue-tsc": "^3.0.8"
+  }
 }

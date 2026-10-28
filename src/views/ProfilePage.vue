@@ -19,7 +19,7 @@
             </div>
             <div class="avatar-copy">
               <strong>Sua foto</strong>
-              <span>JPG ou PNG &middot; at&eacute; 5 MB</span>
+              <span>JPG ou PNG &middot; a foto ser&aacute; compactada antes de salvar</span>
               <button class="text-link" :disabled="uploading" @click="picker?.click()">
                 {{ uploading ? 'Enviando...' : 'Adicionar ou trocar foto' }}
               </button>
@@ -50,7 +50,7 @@ import { useRouter } from 'vue-router';
 import { IonButton, IonContent, IonInput, IonPage } from '@ionic/vue';
 import { useNotice } from '../composables/useNotice';
 import { getSession, signOut } from '../services/auth';
-import { avatarUrl, loadProfile, saveProfile, uploadAvatar, type Profile } from '../services/profile';
+import { loadAvatar, loadProfile, saveProfile, uploadAvatar, type Profile } from '../services/profile';
 
 const router = useRouter();
 const form = reactive({ nome_completo: '', data_nascimento: '', apelido: '' });
@@ -77,14 +77,14 @@ async function refresh() {
   try {
     const { data } = await getSession();
     if (!data.session) { router.replace('/login'); return; }
-    userId.value = data.session.user.id;
-    const profile: Profile | null = await loadProfile(userId.value);
+    userId.value = data.session.user.uid;
+    const profile: Profile | null = await loadProfile(userId.value); /////////////////////////////////
     if (profile) {
       form.nome_completo = profile.nome_completo || '';
       form.data_nascimento = profile.data_nascimento || '';
       form.apelido = profile.apelido || '';
-      imageUrl.value = await avatarUrl(profile.avatar_path);
     }
+    imageUrl.value = await loadAvatar(userId.value);
     updateInitials();
   } catch (error) {
     notice.show(getMessage(error, 'Nao foi possivel carregar o perfil.'));
@@ -117,8 +117,7 @@ async function choosePhoto(event: Event) {
   if (!file) return;
   uploading.value = true;
   try {
-    const path = await uploadAvatar(userId.value, file);
-    imageUrl.value = await avatarUrl(path);
+    imageUrl.value = await uploadAvatar(userId.value, file);
     notice.show('Foto atualizada com sucesso.', 'success');
   } catch (error) {
     notice.show(getMessage(error, 'Nao foi possivel enviar a foto.'));

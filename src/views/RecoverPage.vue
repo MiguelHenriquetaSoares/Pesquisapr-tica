@@ -1,2 +1,63 @@
-<template><ion-page><ion-content class="auth-bg"><main class="auth-card"><router-link class="back-link" to="/login">← Voltar ao login</router-link><p class="eyebrow">RECUPERAÇÃO DE ACESSO</p><h1>Vamos redefinir sua senha.</h1><p class="muted">Informe seu e-mail. Enviaremos um link seguro para continuar.</p><form @submit.prevent="submit"><label>E-mail</label><ion-input v-model="email" type="email" autocomplete="email" placeholder="voce@email.com" required /><p v-if="notice.message" class="notice" :class="notice.kind">{{notice.message}}</p><ion-button expand="block" type="submit" :disabled="busy">{{busy?'Enviando...':'Enviar link de recuperação'}}</ion-button></form></main></ion-content></ion-page></template>
-<script setup lang="ts">import{ref}from'vue';import{IonPage,IonContent,IonInput,IonButton}from'@ionic/vue';import{sendPasswordReset}from'../services/auth';import{useNotice}from'../composables/useNotice';const email=ref(''),busy=ref(false),notice=useNotice();async function submit(){if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)){notice.show('Informe um endereço de e-mail válido.');return}busy.value=true;try{const{error}=await sendPasswordReset(email.value.trim());if(error)throw error;notice.show('Se este e-mail estiver cadastrado, você receberá um link para redefinir a senha.','success')}catch(e){notice.show(e instanceof Error?e.message:'Não foi possível solicitar a recuperação.')}finally{busy.value=false}}</script>
+<template>
+  <ion-page>
+    <ion-content class="auth-bg">
+      <main class="auth-card">
+        <router-link class="back-link" to="/login">← Voltar ao login</router-link>
+        <p class="eyebrow">RECUPERAÇÃO DE ACESSO</p>
+        <h1>Vamos redefinir sua senha.</h1>
+        <p class="muted">Informe seu e-mail. Enviaremos um link seguro para continuar.</p>
+
+        <form @submit.prevent="submit">
+          <label>E-mail</label>
+          <ion-input
+            v-model="email"
+            type="email"
+            autocomplete="email"
+            placeholder="voce@email.com"
+            required
+          />
+          <p v-if="notice.message" class="notice" :class="notice.kind">
+            {{ notice.message }}
+          </p>
+          <ion-button expand="block" type="submit" :disabled="busy">
+            {{ busy ? 'Enviando...' : 'Enviar link de recuperação' }}
+          </ion-button>
+        </form>
+      </main>
+    </ion-content>
+  </ion-page>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { IonPage, IonContent, IonInput, IonButton } from '@ionic/vue';
+import { sendPasswordReset } from '../services/auth';
+import { useNotice } from '../composables/useNotice';
+
+const email = ref('');
+const busy = ref(false);
+const notice = useNotice();
+
+async function submit() {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    notice.show('Informe um endereço de e-mail válido.');
+    return;
+  }
+
+  busy.value = true;
+  try {
+    const { error } = await sendPasswordReset(email.value.trim());
+    if (error) throw error;
+    notice.show(
+      'Se este e-mail estiver cadastrado, você receberá um link para redefinir a senha.',
+      'success',
+    );
+  } catch (error) {
+    notice.show(
+      error instanceof Error ? error.message : 'Não foi possível solicitar a recuperação.',
+    );
+  } finally {
+    busy.value = false;
+  }
+}
+</script>

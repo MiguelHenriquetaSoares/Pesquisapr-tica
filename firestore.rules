@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    match /usuarios/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['nome_completo', 'data_nascimento', 'apelido', 'atualizado_em'])
+        && request.resource.data.nome_completo is string
+        && request.resource.data.nome_completo.size() <= 120
+        && request.resource.data.apelido is string
+        && request.resource.data.apelido.size() <= 60
+        && (request.resource.data.data_nascimento == null || request.resource.data.data_nascimento is string);
+      allow delete: if isOwner(uid);
+    }
+
+    match /imagens/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['image'])
+        && request.resource.data.image is string
+        && request.resource.data.image.size() <= 460800;
+      allow delete: if isOwner(uid);
+    }
+  }
+}
